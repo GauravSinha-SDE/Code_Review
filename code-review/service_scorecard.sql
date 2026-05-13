@@ -1,4 +1,4 @@
-create or replace view SC_LOG.INT_TMS.V_TD_NA_SC_TMS_SERVICE_SCORECARD(
+create or replace view SC_LOG.INT_TMS.V_NA_SC_TMS_SERVICE_SCORECARD(
 	LOAD_LEG_KEY COMMENT 'Primary Key',
 	MASTER_SERVICE_KEY COMMENT 'Master Service Key',
 	ORIGIN_SHIPPING_LOCATION_KEY COMMENT 'Origin Shipping Location Key',
