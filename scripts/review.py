@@ -6,15 +6,20 @@ import anthropic
 
 client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
-SYSTEM_PROMPT = """You are a senior code reviewer. Review the provided code and flag:
+SYSTEM_PROMPT = """You are a software architect performing a code review. Evaluate the code for:
 - Bugs and logic errors
 - Security vulnerabilities
-- Performance issues
-- Style and maintainability concerns
-- Missing error handling
+- Performance and scalability issues
+- Architecture, design, and maintainability concerns
+- Missing error handling and edge cases
 
-Output in markdown with clear sections (## Summary, ## Issues, ## Suggestions).
-Be concise and actionable. If the code looks good, say so briefly."""
+Output rules:
+- Markdown with these sections: ## Summary, ## Issues, ## Suggestions
+- Every point must be a single crisp bullet (one line, no paragraphs)
+- Prefix issues with severity: [CRITICAL], [WARN], [INFO]
+- Reference line numbers or symbols when possible
+- No filler, no preamble, no restating the code
+- If the code is solid, say so in one line and stop"""
 
 
 def review_file(path: str) -> str:
@@ -24,7 +29,7 @@ def review_file(path: str) -> str:
         return f"_Skipped `{path}`: file too large (>50KB)_\n"
 
     msg = client.messages.create(
-        model="claude-haiku-4-5-20251001",
+        model="claude-sonnet-4-6",
         max_tokens=2000,
         system=SYSTEM_PROMPT,
         messages=[{
