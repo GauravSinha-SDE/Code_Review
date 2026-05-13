@@ -1,0 +1,52 @@
+name: Auto Code Review
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'code-review/**'
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip-review]')"
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install anthropic
+
+      - name: Get changed files in code-review/
+        id: changes
+        run: |
+          FILES=$(git diff --name-only HEAD~1 HEAD -- 'code-review/**' | grep -v '\.gitkeep$' | tr '\n' ' ')
+          echo "files=$FILES" >> $GITHUB_OUTPUT
+          echo "Changed files: $FILES"
+
+      - name: Run Claude review
+        if: steps.changes.outputs.files != ''
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/review.py "${{ steps.changes.outputs.files }}"
+
+      - name: Commit review files back to repo
+        if: steps.changes.outputs.files != ''
+        run: |
+          git config user.name "claude-review-bot"
+          git config user.email "claude-review-bot@users.noreply.github.com"
+          git add reviews/
+          if git diff --staged --quiet; then
+            echo "No reviews generated."
+          else
+            git commit -m "Add automated code review [skip-review]"
+            git push
+          fi
