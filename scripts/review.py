@@ -26,7 +26,7 @@ def review_file(path: str) -> str:
     content = Path(path).read_text(encoding="utf-8", errors="ignore")
 
     if len(content) > 50000:
-        return f"_Skipped `{path}`: file too large (>50KB)_\n"
+        return f"_Skipped `{path}`: file too large (>500KB)_\n"
 
     msg = client.messages.create(
         model="claude-sonnet-4-6",
