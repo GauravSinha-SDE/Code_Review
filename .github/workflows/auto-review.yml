@@ -35,7 +35,7 @@ jobs:
       - name: Run Claude review
         if: steps.changes.outputs.files != ''
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.CODE_REVIEW_API_KEY }}
         run: python scripts/review.py "${{ steps.changes.outputs.files }}"
 
       - name: Commit review files back to repo
