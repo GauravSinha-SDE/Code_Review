@@ -1,4 +1,4 @@
-create or replace view SC_LOG.INT_TMS.V_TD_NA_SC_TMS_INBOUND(
+create or replace view SC_LOG.INT_TMS.V_TD_NA_SC_TMS_INBOUND(..
 	LOAD_LEG_KEY COMMENT 'Load Leg Key',
 	LOAD_LEG_ID COMMENT 'Identifier For The Load Leg',
 	CURRENT_OPERATIONAL_STATUS_ID COMMENT 'Current Operational Status Id',
